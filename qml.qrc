@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>EnumerationView.qml</file>
+        <file>Header.qml</file>
+        <file>PanelView.qml</file>
+    </qresource>
+</RCC>
