@@ -18,6 +18,7 @@ Rectangle {
         color: "#FFFFFF"
         font.bold: true
         font.pointSize: 10
+        font.capitalization: Font.Capitalize
     }
     Image {
         id: _icon
