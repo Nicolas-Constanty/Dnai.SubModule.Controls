@@ -1,7 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>EnumerationView.qml</file>
         <file>Header.qml</file>
         <file>PanelView.qml</file>
+        <file>BaseAction.qml</file>
+        <file>BaseMenu.qml</file>
+        <file>EditableText.qml</file>
+        <file>main.qml</file>
+        <file>SearchableMenu.qml</file>
     </qresource>
 </RCC>

@@ -2,6 +2,7 @@ module Dnai.Controls
 EditableText 1.0 EditableText.qml
 Header 1.0 Header.qml
 PanelView 1.0 PanelView.qml
+SearchableMenu 1.0 SearchableMenu.qml
 plugin dnaicontrolsplugin
 classname DnaiControlsPlugin
 typeinfo plugins.qmltypes

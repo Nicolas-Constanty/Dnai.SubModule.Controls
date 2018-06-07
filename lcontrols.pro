@@ -4,6 +4,8 @@ QT += qml
 QT += quick
 CONFIG += c++11
 
+RESOURCES += qml.qrc
+
 TARGET  = dnaicontrolsplugin
 
 # The following define makes your compiler emit warnings if you use
@@ -21,7 +23,8 @@ QML_DESIGNER_IMPORT_PATH =
 pluginfiles.files += \
     Header.qml \
     EditableText.qml \
-    PanelView.qml
+    PanelView.qml \
+    SearchableMenu.qml
 
 
 isEmpty(PROJECT_ROOT_DIRECTORY){
@@ -48,10 +51,16 @@ DISTFILES += \
     PanelView.qml \
     qmldir \
     EditableText.qml \
-    plugins.qmltypes
+    plugins.qmltypes \
+    SearchableMenu.qml \
+    BaseMenu.qml \
+    BaseAction.qml
 
 HEADERS += \
-    dnaicontrols_plugin.h
+    dnaicontrols_plugin.h \
+    searchablemenu.h \
+    fuzzymatch.h
 
 SOURCES += \
-    dnaicontrols_plugin.cpp
+    dnaicontrols_plugin.cpp \
+    searchablemenu.cpp
