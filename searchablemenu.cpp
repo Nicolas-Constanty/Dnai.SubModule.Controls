@@ -66,9 +66,6 @@ void SearchableMenu::setModel(QAbstractItemModel *model)
     if (model == m_model)
         return;
     m_model = model;
-
-    m_engine = dynamic_cast<QQmlApplicationEngine *>(QQmlApplicationEngine::contextForObject(this)->engine());
-    forEach(nullptr, m_model, "");
     emit modelChanged(model);
 }
 
@@ -112,16 +109,10 @@ void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, 
             }
             else
             {
-//                QQmlComponent component(m_engine, QUrl::fromLocalFile(":BaseMenu.qml"));
-//                auto mainmenu = dynamic_cast<QQuickItem*>(component.create());
-//                m_menu = mainmenu;
                 m_menu->setParentItem(this);
-//                m_menu->setY(m_itemHeight);
-//                m_menu->setWidth(width());
                 menu->setParentItem(m_menu);
                 QMetaObject::invokeMethod(m_menu, "addMenu", Q_ARG(QVariant, menu->property("menu")));
             }
-
             forEach(menu, model, fullpath, index);
         }
         else
@@ -133,7 +124,6 @@ void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, 
             actionQml->setProperty("text", name);
             actionQml->setProperty("model", item);
             action->setParentItem(menuParent);
-            qDebug() << property("triggeredAction");
             action->setProperty("triggeredAction", property("triggeredAction"));
             m_actions[fullpath] = action;
             QMetaObject::invokeMethod(menuParent, "addAction", Q_ARG(QVariant, action->property("action")));
@@ -200,18 +190,12 @@ bool SearchableMenu::fuzzyMatch(const QString& fuzzy, const QString& text) {
 
 void SearchableMenu::componentComplete()
 {
-//    if (m_menu)
-//    {
-//        qDebug() << "Completed";
-//        m_menu->setParentItem(this);
-//    }
-//    if (m_fuzzyMenu)
-//    {
-//        m_fuzzyMenu->setParentItem(this);
-//    }
-
     QQuickItem::componentComplete();
-
+    if (m_model)
+    {
+        m_engine = dynamic_cast<QQmlApplicationEngine *>(QQmlApplicationEngine::contextForObject(this)->engine());
+        forEach(nullptr, m_model, "");
+    }
 }
 }
 }
