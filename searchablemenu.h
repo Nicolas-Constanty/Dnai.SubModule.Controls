@@ -63,7 +63,6 @@ private:
     int m_itemHeight;
     int m_itemWidth;
     void forEach(QQuickItem *menuParent, QAbstractItemModel *model, const QString& path, QModelIndex parent= QModelIndex());
-    //            void forEach(QObject *menuParent, QAbstractItemModel *model, QModelIndex parent= QModelIndex());
     bool fuzzyMatch(const QString &fuzzy, const QString &text);
     QMap<QString, QObject *> m_actions;
     QStringList m_matchedList;
