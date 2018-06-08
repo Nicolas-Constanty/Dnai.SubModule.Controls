@@ -90,9 +90,15 @@ void SearchableMenu::setItemWidth(int w)
 
 void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, const QString& path, QModelIndex parent)
 {
+    QHash<QByteArray, int> reverseHash;
+    const auto hash = model->roleNames();
+    for (auto key : hash.keys())
+    {
+        reverseHash[hash[key]] = key;
+    }
     for(int r = 0; r < model->rowCount(parent); ++r) {
         QModelIndex index = model->index(r, 0, parent);
-        QVariant name = model->data(index);
+        QVariant name = model->data(index, reverseHash["name"]);
         QString fullpath = path.isEmpty() ? name.toString() : path + " / " + name.toString();
         if( model->hasChildren(index) )
         {
@@ -122,8 +128,13 @@ void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, 
         {
             QQmlComponent component(m_engine, QUrl::fromLocalFile(":BaseAction.qml"));
             auto action = dynamic_cast<QQuickItem*>(component.create());
-            qvariant_cast<QObject *>(action->property("action"))->setProperty("text", name);
+            QVariant item = model->data(index, reverseHash["item"]);
+            auto actionQml =  qvariant_cast<QObject *>(action->property("action"));
+            actionQml->setProperty("text", name);
+            actionQml->setProperty("model", item);
             action->setParentItem(menuParent);
+            qDebug() << property("triggeredAction");
+            action->setProperty("triggeredAction", property("triggeredAction"));
             m_actions[fullpath] = action;
             QMetaObject::invokeMethod(menuParent, "addAction", Q_ARG(QVariant, action->property("action")));
         }

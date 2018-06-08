@@ -1,6 +1,6 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.4
-import QtQuick.Window 2.11
+import QtQuick.Controls 2.3
+//import QtQuick.Window 2.11
 
 import Dnai.Controls 1.0
 import Dnai.FontAwesome 1.0
@@ -10,6 +10,8 @@ BackendSearchableMenu {
     property Item background: null
     property Component matchDelegate: _itemDelComponent
     property int matchViewWidth: 300
+    property var triggeredAction: null
+
     height: itemHeight + model.rowCount() * itemHeight
     width: itemWidth
 
