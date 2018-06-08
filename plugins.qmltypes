@@ -25,6 +25,51 @@ Module {
         "QtQuick.Window 2.3"
     ]
     Component {
+        name: "dnai::controls::SearchableMenu"
+        defaultProperty: "data"
+        prototype: "QQuickItem"
+        exports: ["Dnai.Controls/BackendSearchableMenu 1.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "menu"; type: "QQuickItem"; isPointer: true }
+        Property { name: "fuzzyField"; type: "QQuickItem"; isPointer: true }
+        Property { name: "model"; type: "QAbstractItemModel"; isPointer: true }
+        Property { name: "itemHeight"; type: "int" }
+        Property { name: "itemWidth"; type: "int" }
+        Property { name: "matchedList"; type: "QVariant"; isReadonly: true }
+        Signal {
+            name: "matched"
+            Parameter { name: "str"; type: "string" }
+        }
+        Signal {
+            name: "menuChanged"
+            Parameter { name: "menu"; type: "QQuickItem"; isPointer: true }
+        }
+        Signal {
+            name: "fuzzyFieldChanged"
+            Parameter { name: "menu"; type: "QQuickItem"; isPointer: true }
+        }
+        Signal {
+            name: "modelChanged"
+            Parameter { name: "model"; type: "QAbstractItemModel"; isPointer: true }
+        }
+        Signal {
+            name: "itemHeightChanged"
+            Parameter { name: "h"; type: "int" }
+        }
+        Signal {
+            name: "itemWidthChanged"
+            Parameter { name: "w"; type: "int" }
+        }
+        Signal {
+            name: "matchedListChanged"
+            Parameter { name: "list"; type: "QVariant" }
+        }
+        Method {
+            name: "searchFuzzy"
+            Parameter { name: "search"; type: "string" }
+        }
+    }
+    Component {
         prototype: "QQuickAbstractButton"
         name: "QtQuick.Controls/AbstractButton 2.0"
         exports: ["QtQuick.Controls/AbstractButton 2.0"]
@@ -126,13 +171,12 @@ Module {
     }
     Component {
         prototype: "QQuickRectangle"
-        name: "QtQuick.Controls.Universal.impl/CheckIndicator 2.0"
-        exports: ["QtQuick.Controls.Universal.impl/CheckIndicator 2.0"]
+        name: "QtQuick.Controls.Material.impl/CheckIndicator 2.0"
+        exports: ["QtQuick.Controls.Material.impl/CheckIndicator 2.0"]
         exportMetaObjectRevisions: [0]
         isComposite: true
         defaultProperty: "data"
         Property { name: "control"; type: "QQuickItem"; isPointer: true }
-        Property { name: "partiallyChecked"; type: "bool"; isReadonly: true }
     }
     Component {
         prototype: "QQuickRectangle"
@@ -147,12 +191,13 @@ Module {
     }
     Component {
         prototype: "QQuickRectangle"
-        name: "QtQuick.Controls.Material.impl/CheckIndicator 2.0"
-        exports: ["QtQuick.Controls.Material.impl/CheckIndicator 2.0"]
+        name: "QtQuick.Controls.Universal.impl/CheckIndicator 2.0"
+        exports: ["QtQuick.Controls.Universal.impl/CheckIndicator 2.0"]
         exportMetaObjectRevisions: [0]
         isComposite: true
         defaultProperty: "data"
         Property { name: "control"; type: "QQuickItem"; isPointer: true }
+        Property { name: "partiallyChecked"; type: "bool"; isReadonly: true }
     }
     Component {
         prototype: "QQuickComboBox"
@@ -371,21 +416,21 @@ Module {
     }
     Component {
         prototype: "QQuickRectangle"
-        name: "QtQuick.Controls.Material.impl/RadioIndicator 2.0"
-        exports: ["QtQuick.Controls.Material.impl/RadioIndicator 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "control"; type: "QQuickItem"; isPointer: true }
-    }
-    Component {
-        prototype: "QQuickRectangle"
         name: "QtQuick.Controls.Universal.impl/RadioIndicator 2.0"
         exports: ["QtQuick.Controls.Universal.impl/RadioIndicator 2.0"]
         exportMetaObjectRevisions: [0]
         isComposite: true
         defaultProperty: "data"
         Property { name: "control"; type: "QVariant" }
+    }
+    Component {
+        prototype: "QQuickRectangle"
+        name: "QtQuick.Controls.Material.impl/RadioIndicator 2.0"
+        exports: ["QtQuick.Controls.Material.impl/RadioIndicator 2.0"]
+        exportMetaObjectRevisions: [0]
+        isComposite: true
+        defaultProperty: "data"
+        Property { name: "control"; type: "QQuickItem"; isPointer: true }
     }
     Component {
         prototype: "QQuickRectangle"
@@ -547,13 +592,15 @@ Module {
         defaultProperty: "data"
     }
     Component {
-        prototype: "QQuickItem"
-        name: "QtQuick.Controls.Universal.impl/SwitchIndicator 2.0"
-        exports: ["QtQuick.Controls.Universal.impl/SwitchIndicator 2.0"]
-        exportMetaObjectRevisions: [0]
+        prototype: "QQuickRectangle"
+        name: "QtQuick.Controls.Fusion.impl/SwitchIndicator 2.3"
+        exports: ["QtQuick.Controls.Fusion.impl/SwitchIndicator 2.3"]
+        exportMetaObjectRevisions: [3]
         isComposite: true
         defaultProperty: "data"
         Property { name: "control"; type: "QQuickItem"; isPointer: true }
+        Property { name: "pressedColor"; type: "QColor"; isReadonly: true }
+        Property { name: "checkMarkColor"; type: "QColor"; isReadonly: true }
     }
     Component {
         prototype: "QQuickItem"
@@ -566,15 +613,13 @@ Module {
         Property { name: "handle"; type: "QQuickRectangle"; isReadonly: true; isPointer: true }
     }
     Component {
-        prototype: "QQuickRectangle"
-        name: "QtQuick.Controls.Fusion.impl/SwitchIndicator 2.3"
-        exports: ["QtQuick.Controls.Fusion.impl/SwitchIndicator 2.3"]
-        exportMetaObjectRevisions: [3]
+        prototype: "QQuickItem"
+        name: "QtQuick.Controls.Universal.impl/SwitchIndicator 2.0"
+        exports: ["QtQuick.Controls.Universal.impl/SwitchIndicator 2.0"]
+        exportMetaObjectRevisions: [0]
         isComposite: true
         defaultProperty: "data"
         Property { name: "control"; type: "QQuickItem"; isPointer: true }
-        Property { name: "pressedColor"; type: "QColor"; isReadonly: true }
-        Property { name: "checkMarkColor"; type: "QColor"; isReadonly: true }
     }
     Component {
         prototype: "QQuickTabBar"
@@ -649,5 +694,3 @@ Module {
         defaultProperty: "data"
     }
 }
-
-
