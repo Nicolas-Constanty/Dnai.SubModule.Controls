@@ -39,6 +39,7 @@ public:
     void setItemHeight(int h);
     void setItemWidth(int w);
     void setMatchedList(const QVariant& list) const;
+    Q_INVOKABLE QObject *getActionObj(const QString &key);
 
 public slots:
     void searchFuzzy(const QString &search);

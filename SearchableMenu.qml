@@ -116,7 +116,14 @@ BackendSearchableMenu {
             text: modelData
             width: parent.width
             height: itemHeight
-            onClicked: console.log("clicked:", modelData)
+            onClicked: {
+                if (_backend.triggeredAction)
+                {
+                    _backend.triggeredAction(_backend.getActionObj(text))
+                    _menu.close()
+                }
+            }
+
             highlighted: ListView.isCurrentItem
             background: Rectangle {
                 color: _itemDel.hovered ? "#639DBD" : "#ffffff"

@@ -85,6 +85,12 @@ void SearchableMenu::setItemWidth(int w)
     emit itemWidthChanged(w);
 }
 
+QObject *SearchableMenu::getActionObj(const QString &key)
+{
+    auto actionQml =  qvariant_cast<QObject *>(m_actions[key]->property("action"));
+    return qvariant_cast<QObject *>(actionQml->property("model"));
+}
+
 void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, const QString& path, QModelIndex parent)
 {
     QHash<QByteArray, int> reverseHash;
