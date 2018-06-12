@@ -173,7 +173,6 @@ bool SearchableMenu::fuzzyMatch(const QString& fuzzy, const QString& text) {
 
     // iterate over matched string
     auto fuzziness = 1;
-    auto error = 0;
     if (fuzziness > fuzzy.length())
         fuzziness = 1;
     const auto lfuzzy = fuzzy.toLower();
