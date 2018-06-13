@@ -40,6 +40,11 @@ BackendSearchableMenu {
         function addAction(baseaction) {
             _menu.addAction(baseaction)
         }
+
+        function removeMenu(baseaction) {
+            _menu.removeMenu(baseaction)
+        }
+
         Menu {
             id: _menu
             EditableText {

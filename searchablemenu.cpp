@@ -61,11 +61,31 @@ void SearchableMenu::setFuzzyField(QQuickItem *menu)
     emit fuzzyFieldChanged(menu);
 }
 
+void SearchableMenu::clearModel()
+{
+    m_actions.clear();
+    for (auto menu : m_rootMenus)
+    {
+        qDebug() << "delete root" << menu;
+        QMetaObject::invokeMethod(m_menu, "removeMenu", Q_ARG(QVariant, menu->property("menu")));
+    }
+    m_rootMenus.clear();
+}
+
 void SearchableMenu::setModel(QAbstractItemModel *model)
 {
-    if (model == m_model)
-        return;
+//    if (model == m_model)
+//        return;
+    if (m_model && isComponentComplete())
+    {
+        clearModel();
+    }
     m_model = model;
+    if (m_model && isComponentComplete())
+    {
+        m_engine = dynamic_cast<QQmlApplicationEngine *>(QQmlApplicationEngine::contextForObject(this)->engine());
+        forEach(nullptr, m_model, "");
+    }
     emit modelChanged(model);
 }
 
@@ -117,6 +137,7 @@ void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, 
             {
                 m_menu->setParentItem(this);
                 menu->setParentItem(m_menu);
+                m_rootMenus.append(menu);
                 QMetaObject::invokeMethod(m_menu, "addMenu", Q_ARG(QVariant, menu->property("menu")));
             }
             forEach(menu, model, fullpath, index);
