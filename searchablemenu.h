@@ -6,9 +6,6 @@
 #include <QQmlApplicationEngine>
 #include <QQmlListProperty>
 
-#define FTS_FUZZY_MATCH_IMPLEMENTATION
-#include "fuzzymatch.h"
-
 namespace dnai {
 namespace controls {
 class SearchableMenu : public QQuickItem

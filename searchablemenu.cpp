@@ -4,6 +4,9 @@
 
 #include "searchablemenu.h"
 
+#define FTS_FUZZY_MATCH_IMPLEMENTATION
+#include "fuzzymatch.h"
+
 namespace dnai {
 namespace controls {
 SearchableMenu::SearchableMenu(QQuickItem *parent) : QQuickItem(parent), m_menu(nullptr), m_fuzzyMenu(nullptr), m_model(nullptr)
@@ -66,7 +69,6 @@ void SearchableMenu::clearModel()
     m_actions.clear();
     for (auto menu : m_rootMenus)
     {
-        qDebug() << "delete root" << menu;
         QMetaObject::invokeMethod(m_menu, "removeMenu", Q_ARG(QVariant, menu->property("menu")));
     }
     m_rootMenus.clear();
@@ -74,8 +76,6 @@ void SearchableMenu::clearModel()
 
 void SearchableMenu::setModel(QAbstractItemModel *model)
 {
-//    if (model == m_model)
-//        return;
     if (m_model && isComponentComplete())
     {
         clearModel();
