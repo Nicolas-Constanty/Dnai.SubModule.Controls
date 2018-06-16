@@ -24,7 +24,8 @@ pluginfiles.files += \
     Header.qml \
     EditableText.qml \
     PanelView.qml \
-    SearchableMenu.qml
+    SearchableMenu.qml \
+    ColorWheel.qml
 
 
 isEmpty(PROJECT_ROOT_DIRECTORY){
@@ -54,13 +55,18 @@ DISTFILES += \
     plugins.qmltypes \
     SearchableMenu.qml \
     BaseMenu.qml \
-    BaseAction.qml
+    BaseAction.qml \
+    ColorWheel.qml
 
 HEADERS += \
     dnaicontrols_plugin.h \
     searchablemenu.h \
-    fuzzymatch.h
+    fuzzymatch.h \
+    triangle.h \
+    colorpicker.h
 
 SOURCES += \
     dnaicontrols_plugin.cpp \
-    searchablemenu.cpp
+    searchablemenu.cpp \
+    triangle.cpp \
+    colorpicker.cpp
