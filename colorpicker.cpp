@@ -82,16 +82,18 @@ void ColorPicker::getColor(QWindow *w, int xt, int yt)
     QPointF p2(cx + (innerRadius - 0.1) * qFastCos(a * 1 + at), cy + (innerRadius - 0.1) * qFastSin(a * 1+ at));
     QPointF p3(cx + (innerRadius - 0.1) * qFastCos(a * 2 + at), cy + (innerRadius - 0.1) * qFastSin(a * 2+ at));
     QPoint p(xt, yt);
+    const auto tmp = mapToScene(p);
+    QPoint pt(tmp.x(), tmp.y());
     bool isInTriangle = pointInTriangle(p, p1, p2, p3);
     if ((d < m_radius - 0.1 && d > innerRadius) || isInTriangle)
     {
-        auto pixmap = QGuiApplication::screenAt(p)->grabWindow(w->winId(), xt + position().x(), yt + position().y(), 1, 1);
+        auto pixmap = QGuiApplication::screenAt(pt)->grabWindow(w->winId(), pt.x(), pt.y(), 1, 1);
         QRgb pixelValue = pixmap.toImage().pixel(0, 0);
         QColor col(pixelValue);
         if (d < m_radius && d > innerRadius)
         {
             m_color = col;
-            m_rotateFocus = atan2(dy, dx); // range (-PI, PI]
+            m_rotateFocus = atan2(dy, dx); // range (-PI, PI)
             m_rotateFocus *= 180 / M_PI;
             emit rotateFocusChanged(m_rotateFocus);
             emit colorChanged(m_color);

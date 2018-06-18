@@ -1,8 +1,8 @@
 import QtQuick 2.0
+import QtQuick.Window 2.10
 
 
 import QtGraphicalEffects 1.0 as Qg
-import QtQuick.Shapes 1.11
 import Dnai.Controls 1.0
 
 ColorPicker {
@@ -14,8 +14,16 @@ ColorPicker {
     MouseArea {
         anchors.fill: parent
         onMouseXChanged: {
-            _control.getColor(_window, mouseX, mouseY)
+            _control.getColor(Window.window, mouseX, mouseY)
         }
+    }
+
+    Rectangle {
+        id: _circle2
+        anchors.centerIn: parent
+        width: _control.radius * 2 * _control.innerPercent
+        height: width
+        radius: width / 2
     }
 
     Rectangle {
@@ -23,8 +31,15 @@ ColorPicker {
         anchors.fill: parent
         radius: _control.radius
         clip: true
-        color: "red"
         visible: false
+    }
+
+    Qg.OpacityMask {
+        visible: false
+        id: _mask
+        anchors.fill: parent
+        source: _circle
+        maskSource: _circle2
     }
 
     Qg.ConicalGradient {
@@ -67,14 +82,13 @@ ColorPicker {
     Qg.OpacityMask {
         anchors.fill: parent
         source: _gradient
-        maskSource: _circle
+        maskSource: _mask
     }
 
     Rectangle {
         anchors.centerIn: parent
         width: _control.radius * 2 * _control.innerPercent
         height: width
-        color: _window.color
         radius: width / 2
         id: ctr
         property double rad: 0.01745329252
