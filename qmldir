@@ -3,6 +3,7 @@ EditableText 1.0 EditableText.qml
 Header 1.0 Header.qml
 PanelView 1.0 PanelView.qml
 SearchableMenu 1.0 SearchableMenu.qml
+ColorWheel 1.0 ColorWheel.qml
 plugin dnaicontrolsplugin
 classname DnaiControlsPlugin
 typeinfo plugins.qmltypes

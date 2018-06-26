@@ -11,6 +11,7 @@ ColorPicker {
     height: radius * 2
     width: radius * 2
     innerPercent: 0.75
+    property color backgroundColor: "white"
     MouseArea {
         anchors.fill: parent
         onMouseXChanged: {
@@ -91,7 +92,7 @@ ColorPicker {
         height: width
         radius: width / 2
         id: ctr
-        property double rad: 0.01745329252
+        color: backgroundColor
 
         ControlTriangle {
             anchors.centerIn: parent
