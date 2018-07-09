@@ -94,7 +94,7 @@ void ColorPicker::getColor(QWindow *w, int xt, int yt)
         {
             m_color = col;
             m_rotateFocus = atan2(dy, dx); // range (-PI, PI)
-            m_rotateFocus *= 180 / M_PI;
+            m_rotateFocus *= static_cast<float>(180 / M_PI);
             emit rotateFocusChanged(m_rotateFocus);
             emit colorChanged(m_color);
         }

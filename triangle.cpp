@@ -17,6 +17,7 @@ Triangle::Triangle(QQuickItem *parent) : QQuickItem(parent)
 
 QSGNode *Triangle::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
 {
+    Q_UNUSED(data)
     m_nbSegments = 3;
     const char r = m_fillColor.red();
     const char g = m_fillColor.green();
