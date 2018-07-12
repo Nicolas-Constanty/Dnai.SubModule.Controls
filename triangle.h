@@ -23,7 +23,7 @@ public:
     Triangle(QQuickItem *parent = nullptr);
 
 
-    virtual QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
+    QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
     QColor fillColor() const;
     int borderWidth() const;
 
