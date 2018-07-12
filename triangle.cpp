@@ -22,7 +22,7 @@ QSGNode *Triangle::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
     const char r = m_fillColor.red();
     const char g = m_fillColor.green();
     const char b = m_fillColor.blue();
-    const char alpha = m_fillColor.alpha();
+//    const char alpha = m_fillColor.alpha();
 
     const auto aa = antialiasing();
     QSGGeometryNode *node;
