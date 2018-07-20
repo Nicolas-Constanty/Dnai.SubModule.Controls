@@ -13,6 +13,9 @@ TARGET  = dnaicontrolsplugin
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+CONFIG(release, debug|release) {
+DEFINES += QT_NO_DEBUG_OUTPUT
+}
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -63,10 +66,12 @@ HEADERS += \
     searchablemenu.h \
     fuzzymatch.h \
     triangle.h \
-    colorpicker.h
+    colorpicker.h \
+    callbackincubator.h
 
 SOURCES += \
     dnaicontrols_plugin.cpp \
     searchablemenu.cpp \
     triangle.cpp \
-    colorpicker.cpp
+    colorpicker.cpp \
+    callbackincubator.cpp

@@ -5,6 +5,7 @@
 #include <QAbstractItemModel>
 #include <QQmlApplicationEngine>
 #include <QQmlListProperty>
+#include <QQmlIncubator>
 
 namespace dnai {
 namespace controls {
@@ -52,6 +53,10 @@ signals:
 
 protected:
     void componentComplete() override;
+
+private slots:
+    void createSubMenu(QQmlIncubator::Status status);
+    void createMenu(QQmlIncubator::Status status);
 
 private:
     QQuickItem *m_menu;

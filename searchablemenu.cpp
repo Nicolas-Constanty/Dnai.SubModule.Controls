@@ -3,6 +3,7 @@
 #include <QQmlContext>
 
 #include "searchablemenu.h"
+#include "callbackincubator.h"
 
 #define FTS_FUZZY_MATCH_IMPLEMENTATION
 #include "fuzzymatch.h"
@@ -111,9 +112,49 @@ QObject *SearchableMenu::getActionObj(const QString &key)
     return qvariant_cast<QObject *>(actionQml->property("model"));
 }
 
+void SearchableMenu::createSubMenu(QQmlIncubator::Status status)
+{
+    if (status == QQmlIncubator::Status::Ready)
+    {
+        auto incubator = dynamic_cast<CallBackIncubator*>(sender());
+        auto menu = dynamic_cast<QQuickItem*>(incubator->object());
+        qvariant_cast<QObject *>(menu->property("menu"))->setProperty("title", incubator->name);
+        if (incubator->menuParent)
+        {
+            menu->setParentItem(incubator->menuParent);
+            QMetaObject::invokeMethod(incubator->menuParent, "addMenu", Q_ARG(QVariant, menu->property("menu")));
+        }
+        else
+        {
+            m_menu->setParentItem(this);
+            menu->setParentItem(m_menu);
+            m_rootMenus.append(menu);
+            QMetaObject::invokeMethod(m_menu, "addMenu", Q_ARG(QVariant, menu->property("menu")));
+        }
+        forEach(menu, incubator->model, incubator->fullpath, incubator->index);
+    }
+}
+
+void SearchableMenu::createMenu(QQmlIncubator::Status status)
+{
+    if (status == QQmlIncubator::Status::Ready)
+    {
+        auto incubator = dynamic_cast<CallBackIncubator*>(sender());
+        auto action = dynamic_cast<QQuickItem*>(incubator->object());
+        auto actionQml =  qvariant_cast<QObject *>(action->property("action"));
+        actionQml->setProperty("text", incubator->name);
+        actionQml->setProperty("model", incubator->item);
+        action->setParentItem(incubator->menuParent);
+        action->setProperty("triggeredAction", property("triggeredAction"));
+        m_actions[incubator->fullpath] = action;
+        QMetaObject::invokeMethod(incubator->menuParent, "addAction", Q_ARG(QVariant, action->property("action")));
+    }
+}
+
 void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, const QString& path, QModelIndex parent)
 {
     QHash<QByteArray, int> reverseHash;
+    QList<CallBackIncubator *> incubators;
     const auto hash = model->roleNames();
     for (auto key : hash.keys())
     {
@@ -122,38 +163,30 @@ void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, 
     for(int r = 0; r < model->rowCount(parent); ++r) {
         QModelIndex index = model->index(r, 0, parent);
         QVariant name = model->data(index, reverseHash["name"]);
+        QVariant item = model->data(index, reverseHash["item"]);
         QString fullpath = path.isEmpty() ? name.toString() : path + " / " + name.toString();
+        const auto incubator = new CallBackIncubator();
+        incubator->name = name;
+        incubator->menuParent = menuParent;
+        incubator->fullpath = fullpath;
+        incubator->index = index;
+        incubator->item = item;
+        incubator->model = model;
+        incubators.append(incubator);
         if( model->hasChildren(index) )
         {
-            QQmlComponent component(m_engine, QUrl::fromLocalFile(":BaseMenu.qml"));
-            auto menu = dynamic_cast<QQuickItem*>(component.create());
-            qvariant_cast<QObject *>(menu->property("menu"))->setProperty("title", name);
-            if (menuParent)
-            {
-                menu->setParentItem(menuParent);
-                QMetaObject::invokeMethod(menuParent, "addMenu", Q_ARG(QVariant, menu->property("menu")));
-            }
-            else
-            {
-                m_menu->setParentItem(this);
-                menu->setParentItem(m_menu);
-                m_rootMenus.append(menu);
-                QMetaObject::invokeMethod(m_menu, "addMenu", Q_ARG(QVariant, menu->property("menu")));
-            }
-            forEach(menu, model, fullpath, index);
+            QQmlComponent component(m_engine, QUrl(QStringLiteral("qrc:/BaseMenu.qml")));
+            QObject::connect(incubator, SIGNAL(statusAsChanged(QQmlIncubator::Status)),
+                             this, SLOT(createSubMenu(QQmlIncubator::Status)));
+
+            component.create(*incubator);
         }
         else
         {
-            QQmlComponent component(m_engine, QUrl::fromLocalFile(":BaseAction.qml"));
-            auto action = dynamic_cast<QQuickItem*>(component.create());
-            QVariant item = model->data(index, reverseHash["item"]);
-            auto actionQml =  qvariant_cast<QObject *>(action->property("action"));
-            actionQml->setProperty("text", name);
-            actionQml->setProperty("model", item);
-            action->setParentItem(menuParent);
-            action->setProperty("triggeredAction", property("triggeredAction"));
-            m_actions[fullpath] = action;
-            QMetaObject::invokeMethod(menuParent, "addAction", Q_ARG(QVariant, action->property("action")));
+            QQmlComponent component(m_engine, QUrl(QStringLiteral("qrc:/BaseAction.qml")));
+            QObject::connect(incubator, SIGNAL(statusAsChanged(QQmlIncubator::Status)),
+                             this, SLOT(createMenu(QQmlIncubator::Status)));
+            component.create(*incubator);
         }
     }
 }
