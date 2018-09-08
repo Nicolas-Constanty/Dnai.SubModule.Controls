@@ -25,7 +25,6 @@ QML_DESIGNER_IMPORT_PATH =
 
 pluginfiles.files += \
     Header.qml \
-    EditableText.qml \
     PanelView.qml \
     SearchableMenu.qml \
     ColorWheel.qml
@@ -54,7 +53,6 @@ DISTFILES += \
     Header.qml \
     PanelView.qml \
     qmldir \
-    EditableText.qml \
     plugins.qmltypes \
     SearchableMenu.qml \
     BaseMenu.qml \

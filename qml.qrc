@@ -4,7 +4,6 @@
         <file>PanelView.qml</file>
         <file>BaseAction.qml</file>
         <file>BaseMenu.qml</file>
-        <file>EditableText.qml</file>
         <file>SearchableMenu.qml</file>
         <file>ColorWheel.qml</file>
     </qresource>

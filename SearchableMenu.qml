@@ -47,7 +47,7 @@ BackendSearchableMenu {
 
         Menu {
             id: _menu
-            EditableText {
+            TextField {
                 id: _editableText
                 y: -itemHeight
                 height: itemHeight
