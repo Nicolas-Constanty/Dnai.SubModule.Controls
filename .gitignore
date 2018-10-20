@@ -35,12 +35,21 @@ Makefile*
 
 x64/
 
+
+\.vs/
+
 release/
 
 debug/
 
-*.user
+*.Release
+
+*.vcxproj
 
 *.filters
 
-*.vcxproj
+*.user
+
+*.ltheme
+
+*.Debug

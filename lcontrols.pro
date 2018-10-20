@@ -4,8 +4,6 @@ QT += qml
 QT += quick
 CONFIG += c++11
 
-RESOURCES += qml.qrc
-
 TARGET  = dnaicontrolsplugin
 
 # The following define makes your compiler emit warnings if you use
