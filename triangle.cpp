@@ -7,10 +7,10 @@ namespace dnai
 {
 namespace controls
 {
-Triangle::Triangle(QQuickItem *parent) : QQuickItem(parent)
+Triangle::Triangle(QQuickItem *parent) : QQuickItem(parent), m_borderWidth(1), m_radius(8), m_nbSegments(3)
 {
     setFlag(ItemHasContents, true);
-    connect(this, SIGNAL(fillColorChanged(const QColor &)),
+    connect(this, SIGNAL(fillColorChanged(QColor)),
             this, SLOT(update()));
     m_fillColor = QColor(130, 255, 0);
 }
@@ -19,18 +19,18 @@ QSGNode *Triangle::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
 {
     Q_UNUSED(data)
     m_nbSegments = 3;
-    const char r = m_fillColor.red();
-    const char g = m_fillColor.green();
-    const char b = m_fillColor.blue();
+    const auto r = static_cast<uchar>(m_fillColor.red());
+    const auto g = static_cast<uchar>(m_fillColor.green());
+    const auto b = static_cast<uchar>(m_fillColor.blue());
 //    const char alpha = m_fillColor.alpha();
 
     const auto aa = antialiasing();
     QSGGeometryNode *node;
     QSGGeometry *geometry;
 
-    setWidth((m_radius + m_radius / 2.5f) * 2);
-    setHeight((m_radius + m_radius / 2.5f) * 2);
-    const uint nbVertices = (aa ? 21 : 3);
+    setWidth((m_radius + m_radius / 2.5) * 2);
+    setHeight((m_radius + m_radius / 2.5) * 2);
+    const int nbVertices = (aa ? 21 : 3);
     if (!oldNode) {
         node = new QSGGeometryNode;
         geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), nbVertices);
@@ -44,55 +44,59 @@ QSGNode *Triangle::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
         node->setFlag(QSGNode::OwnsMaterial);
     }
     else {
-        node = static_cast<QSGGeometryNode *>(oldNode);
+        node = dynamic_cast<QSGGeometryNode *>(oldNode);
+        if (!node)
+        {
+            throw new std::runtime_error("Invalid node object");
+        }
         geometry = node->geometry();
         geometry->allocate(nbVertices);
     }
     const auto cx = width() / 2;
     const auto cy = height() / 2;
-    const auto a = float(2 * M_PI) / m_nbSegments;
+    const auto a = 2 * M_PI / m_nbSegments;
     const qreal aaoffset = 3;
     const auto vertices = geometry->vertexDataAsColoredPoint2D();
     auto idx = -1;
     int i = 0;
-    vertices[++idx].set(cx + m_radius * qFastCos(a * i), cy + m_radius * qFastSin(a * i), r, g, b, 255);
+    vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * i)), static_cast<float>(cy + m_radius * qFastSin(a * i)), r, g, b, 255);
     ++i;
-    vertices[++idx].set(cx + m_radius * qFastCos(a * i), cy + m_radius * qFastSin(a * i), 255, 255, 255, 255);
+    vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * i)), static_cast<float>(cy + m_radius * qFastSin(a * i)), 255, 255, 255, 255);
     ++i;
-    vertices[++idx].set(cx + m_radius * qFastCos(a * i), cy + m_radius * qFastSin(a * i), 0, 0, 0, 255);
+    vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * i)), static_cast<float>(cy + m_radius * qFastSin(a * i)), 0, 0, 0, 255);
     i = 0;
 
     if (aa)
     {
-        vertices[++idx].set(cx + m_radius * qFastCos(a * i), cy + m_radius * qFastSin(a * i), r, g, b, 255);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * i), cy + (m_radius + aaoffset) * qFastSin(a * i), 0, 0, 0, 0);
-        vertices[++idx].set(cx + m_radius * qFastCos(a * (i+1)), cy + m_radius * qFastSin(a * (i+1)), 255, 255, 255, 255);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * i)), static_cast<float>(cy + m_radius * qFastSin(a * i)), r, g, b, 255);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * i)), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * i)), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * (i+1))), static_cast<float>(cy + m_radius * qFastSin(a * (i+1))), 255, 255, 255, 255);
 
-        vertices[++idx].set(cx + m_radius * qFastCos(a * (i+1)), cy + m_radius * qFastSin(a * (i+1)), 255, 255, 255, 255);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * (i+1)), cy + (m_radius + aaoffset) * qFastSin(a * (i+1)), 0, 0, 0, 0);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * i), cy + (m_radius + aaoffset) * qFastSin(a * i), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * (i+1))), static_cast<float>(cy + m_radius * qFastSin(a * (i+1))), 255, 255, 255, 255);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * (i+1))), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * (i+1))), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * i)), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * i)), 0, 0, 0, 0);
         ++i;
 
-        vertices[++idx].set(cx + m_radius * qFastCos(a * i), cy + m_radius * qFastSin(a * i), 255, 255, 255, 255);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * i), cy + (m_radius + aaoffset) * qFastSin(a * i), 0, 0, 0, 0);
-        vertices[++idx].set(cx + m_radius * qFastCos(a * (i+1)), cy + m_radius * qFastSin(a * (i+1)), 0, 0, 0, 255);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * i)), static_cast<float>(cy + m_radius * qFastSin(a * i)), 255, 255, 255, 255);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * i)), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * i)), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * (i+1))), static_cast<float>(cy + m_radius * qFastSin(a * (i+1))), 0, 0, 0, 255);
 
-        vertices[++idx].set(cx + m_radius * qFastCos(a * (i+1)), cy + m_radius * qFastSin(a * (i+1)), 0, 0, 0, 255);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * (i+1)), cy + (m_radius + aaoffset) * qFastSin(a * (i+1)), 0, 0, 0, 0);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * i), cy + (m_radius + aaoffset) * qFastSin(a * i), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * (i+1))), static_cast<float>(cy + m_radius * qFastSin(a * (i+1))), 0, 0, 0, 255);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * (i+1))), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * (i+1))), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * i)), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * i)), 0, 0, 0, 0);
         ++i;
 
-        vertices[++idx].set(cx + m_radius * qFastCos(a * i), cy + m_radius * qFastSin(a * i), 0, 0, 0, 255);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * i), cy + (m_radius + aaoffset) * qFastSin(a * i), 0, 0, 0, 0);
-        vertices[++idx].set(cx + m_radius * qFastCos(a * 0), cy + m_radius * qFastSin(a * 0), r, g, b, 255);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * i)), static_cast<float>(cy + m_radius * qFastSin(a * i)), 0, 0, 0, 255);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * i)), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * i)), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * 0)), static_cast<float>(cy + m_radius * qFastSin(a * 0)), r, g, b, 255);
 
-        vertices[++idx].set(cx + m_radius * qFastCos(a * 0), cy + m_radius * qFastSin(a * 0), r, g, b, 255);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * 0), cy + (m_radius + aaoffset) * qFastSin(a * 0), 0, 0, 0, 0);
-        vertices[++idx].set(cx + (m_radius + aaoffset) * qFastCos(a * i), cy + (m_radius + aaoffset) * qFastSin(a * i), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + m_radius * qFastCos(a * 0)), static_cast<float>(cy + m_radius * qFastSin(a * 0)), r, g, b, 255);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * 0)), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * 0)), 0, 0, 0, 0);
+        vertices[++idx].set(static_cast<float>(cx + (m_radius + aaoffset) * qFastCos(a * i)), static_cast<float>(cy + (m_radius + aaoffset) * qFastSin(a * i)), 0, 0, 0, 0);
     }
 
     if (m_borderWidth > 0)
-        Q_ASSERT(static_cast<uint>(idx + 1) == nbVertices);
+        Q_ASSERT(idx + 1 == nbVertices);
     node->markDirty(QSGNode::DirtyGeometry);
     return node;
 }
@@ -122,7 +126,7 @@ int Triangle::nbSegments() const
     return m_nbSegments;
 }
 
-void Triangle::setFillColor(QColor fillColor)
+void Triangle::setFillColor(const QColor &fillColor)
 {
     if (m_fillColor == fillColor)
         return;
@@ -149,7 +153,7 @@ void Triangle::setRadius(int radius)
     emit radiusChanged(m_radius);
 }
 
-void Triangle::setBorderColor(QColor borderColor)
+void Triangle::setBorderColor(const QColor &borderColor)
 {
     if (m_borderColor == borderColor)
         return;

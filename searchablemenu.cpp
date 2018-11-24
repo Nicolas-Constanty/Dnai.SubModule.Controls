@@ -10,11 +10,11 @@
 
 namespace dnai {
 namespace controls {
-SearchableMenu::SearchableMenu(QQuickItem *parent) : QQuickItem(parent), m_menu(nullptr), m_fuzzyMenu(nullptr), m_model(nullptr)
+SearchableMenu::SearchableMenu(QQuickItem *parent) : QQuickItem(parent), m_menu(nullptr), m_fuzzyMenu(nullptr), m_model(nullptr), m_engine(nullptr), m_itemHeight(40), m_itemWidth(100)
 {
 }
 
-SearchableMenu::SearchableMenu(QAbstractItemModel *model, QQuickItem *parent) : QQuickItem(parent), m_menu(nullptr), m_fuzzyMenu(nullptr), m_model(nullptr)
+SearchableMenu::SearchableMenu(QAbstractItemModel *model, QQuickItem *parent) : QQuickItem(parent), m_menu(nullptr), m_fuzzyMenu(nullptr), m_model(nullptr), m_engine(nullptr), m_itemHeight(40), m_itemWidth(100)
 {
     setModel(model);
 }
@@ -156,9 +156,9 @@ void SearchableMenu::forEach(QQuickItem *menuParent, QAbstractItemModel* model, 
     QHash<QByteArray, int> reverseHash;
     QList<CallBackIncubator *> incubators;
     const auto hash = model->roleNames();
-    for (auto key : hash.keys())
+    for (auto it = hash.constBegin(); it != hash.constEnd(); ++it)
     {
-        reverseHash[hash[key]] = key;
+        reverseHash[hash[it.key()]] = it.key();
     }
     for(int r = 0; r < model->rowCount(parent); ++r) {
         QModelIndex index = model->index(r, 0, parent);
@@ -197,21 +197,22 @@ void SearchableMenu::searchFuzzy(const QString &search)
     if (!search.isEmpty())
     {
         QMap<int, QStringList> map;
-        for(const auto &key : m_actions.keys())
+        for (auto it = m_actions.constBegin(); it != m_actions.constEnd(); ++it)
         {
             const auto lsearch = search.toLower();
-            const auto lkey = key.toLower();
+            const auto lkey = it.key().toLower();
             auto out = 0;
             fts::fuzzy_match(lsearch.toLatin1().constData(), lkey.toLatin1().constData(), out);
             if (lkey.contains(lsearch))
                 out += 50;
             if (out > 80)
-                map[out].append(key);
+                map[out].append(it.key());
         }
-        for (const auto &key : map.keys())
+        for (auto it = map.constBegin(); it != map.constEnd(); it++)
         {
-            for (const auto &val : map[key])
-                m_matchedList.insert(0, val);
+            const auto &k = map[it.key()];
+            for (auto it2 = k.constBegin(); it2 != k.constEnd(); it2++)
+                m_matchedList.insert(0, *it2);
         }
     }
     emit matchedListChanged(QVariant::fromValue(m_matchedList));

@@ -34,17 +34,17 @@ public:
     int nbSegments() const;
 
 public slots:
-    void setFillColor(QColor fillColor);
+    void setFillColor(const QColor &fillColor);
     void setBorderWidth(int borderWidth);
     void setRadius(int radius);
-    void setBorderColor(QColor borderColor);
+    void setBorderColor(const QColor &borderColor);
     void setNbSegments(int nbSegments);
 
 signals:
-    void fillColorChanged(QColor fillColor);
+    void fillColorChanged(const QColor &fillColor);
     void borderWidthChanged(int borderWidth);
     void radiusChanged(int radius);
-    void borderColorChanged(QColor borderColor);
+    void borderColorChanged(const QColor &borderColor);
     void nbSegmentsChanged(int nbSegments);
 
 private:

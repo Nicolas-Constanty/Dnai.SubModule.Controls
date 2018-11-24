@@ -12,9 +12,9 @@ class ColorPicker : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(float rotateFocus READ rotateFocus NOTIFY rotateFocusChanged)
+    Q_PROPERTY(qreal rotateFocus READ rotateFocus NOTIFY rotateFocusChanged)
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
-    Q_PROPERTY(float innerPercent READ innerPercent WRITE setInnerPercent NOTIFY innerPercentChanged)
+    Q_PROPERTY(qreal innerPercent READ innerPercent WRITE setInnerPercent NOTIFY innerPercentChanged)
     Q_PROPERTY(QColor pointingColor READ pointingColor NOTIFY pointingColorChanged)
 
 public:
@@ -22,41 +22,41 @@ public:
     Q_INVOKABLE void getColor(QWindow *w, int x, int y);
     const QColor &color() const;
 
-    float rotateFocus() const;
+    qreal rotateFocus() const;
 
     qreal radius() const;
 
-    float innerPercent() const;
+    qreal innerPercent() const;
 
     bool pointInTriangle(const QPointF &pt, const QPointF &v1, const QPointF &v2, const QPointF &v3);
 
 
-    float sign(const QPointF &p1, const QPointF &p2, const QPointF &p3);
+    qreal sign(const QPointF &p1, const QPointF &p2, const QPointF &p3);
     QColor pointingColor() const;
 
 public slots:
     void setRadius(qreal radius);
 
-    void setInnerPercent(float innerPercent);
+    void setInnerPercent(qreal innerPercent);
 
-    void setColor(QColor color);
+    void setColor(const QColor &color);
 
 signals:
     void colorChanged(const QColor &color);
 
-    void rotateFocusChanged(float rotateFocus);
+    void rotateFocusChanged(qreal rotateFocus);
 
     void radiusChanged(qreal radius);
 
-    void innerPercentChanged(float innerPercent);
+    void innerPercentChanged(qreal innerPercent);
 
-    void pointingColorChanged(QColor pointingColor);
+    void pointingColorChanged(const QColor &pointingColor);
 
 private:
     QColor m_color;
-    float m_rotateFocus;
+    qreal m_rotateFocus;
     qreal m_radius;
-    float m_innerPercent;
+    qreal m_innerPercent;
     QColor m_pointingColor;
 };
 }
